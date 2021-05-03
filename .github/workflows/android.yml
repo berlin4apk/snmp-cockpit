@@ -1,0 +1,40 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+
+    - name: gradle cmd Action
+      uses: eskatos/gradle-command-action@v1
+      with:
+        wrapper-cache-enabled: false
+        dependencies-cache-enabled: false
+        configuration-cache-enabled: false
+        #gradle-version: 6.8.3
+        arguments: build
+
+#    - name: Grant execute permission for gradlew
+#      run: chmod +x gradlew
+#    - name: Build with Gradle
+#      run: ./gradlew build
+
+    - name: upload-artifact my-artifact ${{ matrix.node-version }}
+      uses: 'actions/upload-artifact@v2'
+      with:
+        name: my-artifact-${{ matrix.node-version }}
+        path: '**/*.apk'
